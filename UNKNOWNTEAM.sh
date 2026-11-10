@@ -1,6 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# UNKNOWN TEAM - Resolution Manager
-# Conexion igual al scanner: adb pair localhost:PUERTO CODIGO y adb connect localhost:PUERTO.
+
 RES_ANCHO=""
 RES_ALTO=""
 TARGET_FILE="$HOME/.unknown_team_adb_target"
@@ -19,7 +18,7 @@ comprobar_adb(){
 }
 validar_puerto(){ [[ "$1" =~ ^[0-9]+$ ]] && [ "$1" -ge 1 ] && [ "$1" -le 65535 ]; }
 
-# Mismo sistema de key de acceso que UNKNOWN Scanner: /api/key/usar.
+
 pedir_key(){
   local inner=54 raw_key key resp ok err token exp
   while true; do
@@ -157,14 +156,13 @@ validar_resolucion_segura(){
   if (( w < 1 || h < 1 || w > 8192 || h > 8192 )); then
     printf '%sResolución inválida o fuera del límite seguro de 1–8192 px por lado.%s\n' "$RED" "$RESET"; return 1
   fi
-  # En este teléfono las pruebas del usuario han derribado system_server al
-  # forzar tamaño. El script no puede parchear ese fallo del firmware.
+
   if [ "$modelo" = 'SM-A315G' ] && [ "${android%%.*}" = '12' ] && [ "${w}x${h}" != "$fisica" ] && [ "${h}x${w}" != "$fisica" ]; then
     printf '%sBLOQUEADO por seguridad: los registros de %s / Android %s muestran caída de system_server al cambiar el tamaño.%s\n' "$RED" "$modelo" "$android" "$RESET"
     printf 'No vuelvas a aplicar una resolución personalizada con este teléfono/firmware. La opción Restaurar sigue disponible.\n'
     return 1
   fi
-  # Exigir proporción equivalente a la pantalla física (admitiendo giro 90°).
+
   diff=$(( w * fh - h * fw )); (( diff < 0 )) && diff=$(( -diff ))
   denom=$(( h * fw )); (( denom < 1 )) && denom=1
   if (( diff * 100 > denom * 5 )); then
